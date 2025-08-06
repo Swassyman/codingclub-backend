@@ -1,0 +1,35 @@
+import { Event } from "../models/Event.js";
+
+//todo: check if event has been created
+export async function createEvent(req, res) {
+  try {
+    const { name, desc, date, venue, mode } = req.body;
+    const img = req.file ? req.file.buffer.toString("base64") : undefined;
+
+    const newEvent = new Event({ name, desc, date, venue, mode, img });
+    await newEvent.save();
+    res.status(201).json({ message: "Event added!", event: newEvent });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error saving event", error: error.message });
+  }
+}
+
+export async function getEvents(_req, res) {
+  try {
+    const events = await Event.find();
+    res.status(200).json(events);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error loading event", error: error.message });
+  }
+}
+
+const eventController = {
+  createEvent,
+  getEvents,
+};
+
+export default eventController;
