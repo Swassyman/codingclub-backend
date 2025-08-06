@@ -4,12 +4,12 @@ import Member from "../models/Member.js";
 //todo: check if  member is already registered
 export async function createMember(req, res) {
   try {
-    const { name, branch, email, year } = req.body;
+    const { name, branch, emailID, year } = req.body;
     const profileimg = req.file
       ? req.file.buffer.toString("base64")
       : undefined;
 
-    const newMember = new Member({ name, branch, email, year, profileimg });
+    const newMember = new Member({ name, branch, emailID, year, profileimg });
     await newMember.save();
 
     res.status(201).json({ message: "Member added!", member: newMember });

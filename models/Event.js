@@ -5,7 +5,7 @@ const eventSchema = new mongoose.Schema({
   eventDescription: { type: String, required: true },
   eventDate: { type: String, required: true },
   eventVenue: { type: String, required: true },
-  eventMode: { type: String, enum: ["Offline", "Online"], required: true },
+  eventMode: { type: String, required: true },
   eventImage: { type: String, required: false },
 });
 

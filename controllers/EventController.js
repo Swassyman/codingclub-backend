@@ -3,10 +3,10 @@ import { Event } from "../models/Event.js";
 //todo: check if event has been created
 export async function createEvent(req, res) {
   try {
-    const { name, desc, date, venue, mode } = req.body;
+    const { eventName, eventDescription, eventDate, eventVenue, eventMode } = req.body;
     const img = req.file ? req.file.buffer.toString("base64") : undefined;
 
-    const newEvent = new Event({ name, desc, date, venue, mode, img });
+    const newEvent = new Event({ eventName, eventDescription, eventDate, eventVenue, eventMode, img });
     await newEvent.save();
     res.status(201).json({ message: "Event added!", event: newEvent });
   } catch (error) {
