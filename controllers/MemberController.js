@@ -1,4 +1,3 @@
-import { get } from "http";
 import Member from "../models/Member.js";
 
 //todo: check if  member is already registered
@@ -10,6 +9,12 @@ export async function createMember(req, res) {
       : undefined;
 
     const newMember = new Member({ name, branch, emailID, year, profileimg });
+
+    const existingUser = await Member.findOne({emailID: emailID});
+    if(existingUser){
+        return res.status(400).json({ message: 'Email ID already used'});
+    }
+    
     await newMember.save();
 
     res.status(201).json({ message: "Member added!", member: newMember });
