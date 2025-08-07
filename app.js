@@ -5,6 +5,7 @@ config();
 
 import eventRoute from './routes/eventRoutes.js';
 import memberRoute from './routes/memberRoutes.js';
+import registerRoute from './routes/registerRoute.js';
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(json());
 
 app.use('/api/events', eventRoute);
 app.use('/api/members', memberRoute);
+app.use('/api/register', registerRoute);
 
 app.get('/', (_req, res) => res.json({ status: 'active' }));
 

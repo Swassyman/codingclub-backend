@@ -5,7 +5,7 @@ import { createMember, getMemberProfile, login} from "../controllers/MemberContr
 import { authenticateToken } from "../middlewares/jwtauth.js";
 
 router.post("/", upload.single("image"), createMember);
-router.get("/", authenticateToken, getMemberProfile);
+router.get("/profile/:memberId", authenticateToken, getMemberProfile);
 router.post("/login", login);
 
 export default router;
