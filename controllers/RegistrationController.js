@@ -1,11 +1,5 @@
 const Registration = require('../models/Registration.js');
 
-exports.register = async (req, res) => {
-
-};
-
-const registrationController = {
-
+export async function register() {
+    return null;
 }
-
-export default registrationController;
