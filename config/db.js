@@ -5,7 +5,7 @@ const connectDB = async () => {
     await connect(process.env.DATABASE_URL);
     console.log("MongoDB connected :D");
   } catch (error) {
-    console.log("MongoDB not connected :C");
+    console.error("MongoDB not connected :C");
   }
 };
 
