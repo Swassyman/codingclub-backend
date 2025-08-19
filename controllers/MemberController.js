@@ -16,7 +16,6 @@ export async function createMember(req, res) {
       branch,
       emailID,
       year,
-      profileimg,
       password: hashed,
     });
 
