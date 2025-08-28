@@ -3,49 +3,8 @@ import connectDB from './config/db.js';
 
 const PORT = process.env.PORT || 3000;
 
-let cached = global.mongoose;
+await connectDB();
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
-async function connectDBWithCache() {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-    cached.promise = connectDB().then(mongoose => {
-      return mongoose;
-    });
-  }
-  
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
-  
-  return cached.conn;
-}
-
-if (process.env.VERCEL !== '1') {
-  // Local development
-  (async () => {
-    try {
-      await connectDBWithCache();
-      app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-      });
-    } catch (error) {
-      console.error('Failed to start server:', error);
-      process.exit(1);
-    }
-  })();
-}
-
-export default app;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
