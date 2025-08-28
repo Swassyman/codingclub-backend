@@ -6,7 +6,6 @@ const memberSchema = new Schema({
   year: { type: String, required: true },
   emailID: { type: String, required: true, unique: true},
   password: { type: String, required: true },
-  profileimg : { type: String, required: false},
 });
 
 export default model("Member", memberSchema);

@@ -1,7 +1,5 @@
-import app from './app.js';
-import connectDB from './config/db.js';
-
-const PORT = process.env.PORT || 3000;
+import app from '../app.js';
+import connectDB from '../config/db.js';
 
 let cached = global.mongoose;
 
@@ -33,19 +31,13 @@ async function connectDBWithCache() {
   return cached.conn;
 }
 
-if (process.env.VERCEL !== '1') {
-  // Local development
-  (async () => {
-    try {
-      await connectDBWithCache();
-      app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-      });
-    } catch (error) {
-      console.error('Failed to start server:', error);
-      process.exit(1);
-    }
-  })();
-}
-
-export default app;
+export default async (req, res) => {
+  try {
+    await connectDBWithCache();
+  } catch (error) {
+    console.error('Database connection error:', error);
+    return res.status(500).json({ error: 'Database connection failed' });
+  }
+  
+  return app(req, res);
+};
