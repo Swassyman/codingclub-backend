@@ -2,7 +2,11 @@ import Registration from "../models/Registration.js";
 
 export async function register(req, res, next) {
   const { eventId } = req.params;
-  const userId = req.user._id;
+  const { userId } = req.auth;
+
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized: not signed in" });
+  }
 
   try {
     const exists = await Registration.findOne({ event: eventId, user: userId });

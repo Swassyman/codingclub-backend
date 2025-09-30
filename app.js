@@ -6,21 +6,25 @@ config();
 import eventRoute from './routes/eventRoutes.js';
 import memberRoute from './routes/memberRoutes.js';
 import registerRoute from './routes/registerRoute.js';
-import cookieParser from 'cookie-parser';
+import { clerkMiddleware, requireAuth } from '@clerk/express';
+import { clerkAdmin } from './middlewares/auth.js';
+import { mockAuth } from './middlewares/mockauth.js';
+import { clerkAuth } from './middlewares/jwtauth.js';
 
 const app = express();
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://www.codingclubtkmce.in",
   credentials: true,
 }));
-app.use(cookieParser())
+
+app.use(clerkMiddleware());
 app.use(json());
 
 app.use('/api/events', eventRoute);
-app.use('/api/members', memberRoute);
-app.use('/api/register', registerRoute);
+app.use('/api/members', clerkAuth, memberRoute);
+app.use('/api/register', clerkAuth, registerRoute);
 
 app.get('/', (_req, res) => res.json({ status: 'active' }));
 
 export default app;
-

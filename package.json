@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@clerk/express": "^1.7.34",
     "@dicebear/collection": "^9.2.4",
     "@dicebear/core": "^9.2.4",
     "bcryptjs": "^3.0.2",

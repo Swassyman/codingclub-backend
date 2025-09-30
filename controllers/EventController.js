@@ -13,6 +13,7 @@ export async function createEvent(req, res) {
       eventVenue,
       eventMode,
       img,
+      createdBy: req.auth.userId
     });
 
     const existingEvent = await Event.findOne({ eventName: eventName });

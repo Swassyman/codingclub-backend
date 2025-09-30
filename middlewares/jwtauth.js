@@ -1,17 +1,17 @@
-import jwt from "jsonwebtoken";
+import { getAuth } from "@clerk/express";
 
-export function authenticateCookie(req, res, next) {
-  const token = req.cookies.token;
+export function clerkAuth(req, res, next) {
+  const { userId, sessionId, user } = getAuth(req);
+  req.user = {
+    id: userId,
+    sessionId,
+    email: user?.emailAddresses[0]?.emailAddress,
+  };
 
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized: No token" });
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(403).json({ message: "Invalid or expired token" });
-  }
+  req.user = { id: userId, sessionId };
+  next();
 }
