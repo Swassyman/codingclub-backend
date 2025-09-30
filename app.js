@@ -8,7 +8,6 @@ import memberRoute from './routes/memberRoutes.js';
 import registerRoute from './routes/registerRoute.js';
 import { clerkMiddleware, requireAuth } from '@clerk/express';
 import { clerkAdmin } from './middlewares/auth.js';
-import { mockAuth } from './middlewares/mockauth.js';
 import { clerkAuth } from './middlewares/jwtauth.js';
 
 const app = express();
