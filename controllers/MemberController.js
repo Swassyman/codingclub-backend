@@ -1,9 +1,13 @@
 import Member from "../models/Member.js";
+import { users } from "@clerk/clerk-sdk-node";
 
 export async function createMember(req, res) {
   try {
     const { branch, year } = req.body;
-    const { userId, user } = req.auth;
+    const { userId } = req.auth;
+
+    const user = await users.getUser(userId);
+
     if (!branch || !year)
       return res.status(400).json({ message: "Branch and year are required" });
     const existingMember = await Member.findOne({ clerkId: userId });
