@@ -1,6 +1,7 @@
 import Member from "../models/Member.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import sendRegistrationEmails from "../utils/sendMail.js";
 
 export async function createMember(req, res) {
   try {
@@ -28,6 +29,10 @@ export async function createMember(req, res) {
     });
 
     await newMember.save();
+
+    sendRegistrationEmails(req.body).catch((err) =>
+      console.error("Error sending registration emails:", err)
+    );
 
     res.status(201).json({
       message: "Member added!",
@@ -64,6 +69,10 @@ export async function createMember(req, res) {
 }
 
 export async function getMemberProfile(req, res) {
+  if (req.params.memberId !== req.user.id) {
+    return res.status(403).json({ message: "Access denied!" });
+  }
+
   try {
     const member = await Member.findById(req.user.id);
     if (!member) {
