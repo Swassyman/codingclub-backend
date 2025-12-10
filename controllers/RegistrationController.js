@@ -2,7 +2,7 @@ import Registration from "../models/Registration.js";
 
 export async function register(req, res, next) {
   const { eventId } = req.params;
-  const userId = req.user._id;
+  const userId = req.user.id;
 
   try {
     const exists = await Registration.findOne({ event: eventId, user: userId });
