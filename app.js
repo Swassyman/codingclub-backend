@@ -11,7 +11,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 app.use(
   cors({
-    origin: ["https://www.codingclubtkmce.in", "http://localhost:5173"],
+    origin: ["https://www.codingclubtkmce.in", "https://club-website-bay.vercel.app"],
     credentials: true,
   })
 );
