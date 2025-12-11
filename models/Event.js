@@ -6,7 +6,7 @@ const eventSchema = new mongoose.Schema({
   eventDate: { type: Date, required: true },
   eventVenue: { type: String, required: true },
   eventMode: { type: String, required: true },
-  eventImage: { type: String, required: false },
+  eventImg: { type: String, required: false },
 });
 
 export const Event = mongoose.model("Event", eventSchema);

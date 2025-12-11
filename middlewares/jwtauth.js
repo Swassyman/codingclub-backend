@@ -15,3 +15,10 @@ export function authenticateCookie(req, res, next) {
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 }
+
+export function requireAdmin(req, res, next) {
+  if (!req.user || !req.user.isAdmin) {
+    return res.status(403).json({ message: "Forbidden: Admins only" });
+  }
+  next();
+}

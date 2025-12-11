@@ -97,6 +97,8 @@ export async function login(req, res) {
       });
     }
 
+    const isAdmin = emailID === process.env.ADMIN_EMAILS;
+
     const member = await Member.findOne({ emailID });
     if (!member) {
       return res.status(400).json({ message: "Invalid email or password" });
@@ -107,9 +109,13 @@ export async function login(req, res) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ id: member._id }, process.env.SECRET_KEY, {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign(
+      { id: member._id, isAdmin },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "1d",
+      }
+    );
 
     const isProduction = process.env.NODE_ENV === "production";
 
@@ -129,6 +135,7 @@ export async function login(req, res) {
         email: member.emailID,
         branch: member.branch,
         year: member.year,
+        isAdmin,
       },
     });
   } catch (error) {
