@@ -22,25 +22,4 @@ export default async function sendRegistrationEmails(member) {
       </div>
     `,
   });
-
-  // send to admin
-  await transporter.sendMail({
-    from: `"Coding Club TKMCE" <${process.env.GMAIL_USER}>`,
-    to: process.env.GMAIL_USER,
-    subject: `New Member Registration: ${member.name}`,
-    html: `
-      <div style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 20px; background-color: #020617; color: #e5e7eb;">
-        <h1 style="color: #22c55e;">New Member Registered </h1>
-        <p>A new member has just registered on the website.</p>
-        <div style="margin-top:16px; padding:16px; border-radius:12px; background:#020617; border:1px solid #1f2933;">
-          <p style="margin:4px 0;"><strong>Name:</strong> ${member.name}</p>
-          <p style="margin:4px 0;"><strong>Email:</strong> ${member.emailID}</p>
-          <p style="margin:4px 0;"><strong>Branch:</strong> ${member.branch}</p>
-          <p style="margin:4px 0;"><strong>Year:</strong> ${member.year}</p>
-          <p style="margin:4px 0;"><strong>Member ID:</strong> ${member.id}</p>
-        </div>
-        <p style="margin-top:16px;">You may want to add them to WhatsApp/Discord or your internal tracking sheet.</p>
-      </div>
-    `,
-  });
 }
