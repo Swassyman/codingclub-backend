@@ -5,9 +5,9 @@ import sendRegistrationEmails from "../utils/sendMail.js";
 
 export async function createMember(req, res) {
   try {
-    const { name, branch, emailID, year, password } = req.body;
+    const { name, branch, emailID, year, password, phoneNo } = req.body;
 
-    if (!name || !branch || !emailID || !year || !password) {
+    if (!name || !branch || !emailID || !year || !password || !phoneNo) {
       return res.status(400).json({
         message: "All fields are required",
       });
@@ -26,6 +26,7 @@ export async function createMember(req, res) {
       emailID,
       year,
       password: hashed,
+      phoneNo,
     });
 
     await newMember.save();
