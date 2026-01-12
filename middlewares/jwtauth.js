@@ -1,7 +1,16 @@
 import jwt from "jsonwebtoken";
 
+const BEARER_PREFIX = "Bearer ";
+
 export function authenticateCookie(req, res, next) {
-  const token = req.cookies.token;
+  let token = null;
+  const authHeader = req.get("Authorization");
+
+  if (req.cookies.token) {
+    token = req.cookies.token;
+  } else if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
+    token = authHeader.slice(BEARER_PREFIX.length);
+  }
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No token" });
