@@ -37,7 +37,7 @@ export async function createEvent(req, res) {
 
 export async function getEvents(_req, res) {
   try {
-    const events = await Event.find();
+    const events = await Event.find().sort({eventDate: -1});
     res.status(200).json(events);
   } catch (error) {
     res
