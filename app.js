@@ -12,7 +12,9 @@ const app = express();
 app.use(
   cors({
     origin: [
-      ["https://www.codingclubtkmce.in", "https://club-website-bay.vercel.app"],
+      "https://www.codingclubtkmce.in",
+      "https://club-website-bay.vercel.app",
+      "http://localhost:5173",
     ],
     credentials: true,
   })

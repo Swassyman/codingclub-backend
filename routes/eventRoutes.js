@@ -10,7 +10,13 @@ import {
 } from "../controllers/EventController.js";
 import { authenticateCookie, requireAdmin } from "../middlewares/jwtauth.js";
 
-router.post("/create", upload.single("image"), createEvent);
+router.post(
+  "/create",
+  authenticateCookie,
+  requireAdmin,
+  upload.single("image"),
+  createEvent
+);
 router.get("/", getEvents);
 router.post("/registeredEvents", authenticateCookie, getUserEventsID);
 router.post("/userEvents", authenticateCookie, getUserEvents);
@@ -20,6 +26,12 @@ router.post(
   requireAdmin,
   getRegistrations
 );
-router.post("/createnewevent", authenticateCookie, requireAdmin, createEvent);
+router.post(
+  "/createnewevent",
+  authenticateCookie,
+  requireAdmin,
+  upload.single("image"),
+  createEvent
+);
 
 export default router;

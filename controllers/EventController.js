@@ -9,8 +9,17 @@ export async function createEvent(req, res) {
       eventDate,
       eventVenue,
       eventMode,
-      eventImg,
     } = req.body;
+
+    let eventImg = req.body.eventImg;
+    if (req.file) {
+      eventImg = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    }
+
+    const existingEvent = await Event.findOne({ eventName: eventName });
+    if (existingEvent) {
+      return res.status(400).json({ message: "Event already exists" });
+    }
 
     const newEvent = new Event({
       eventName,
@@ -20,11 +29,6 @@ export async function createEvent(req, res) {
       eventMode,
       eventImg,
     });
-
-    const existingEvent = await Event.findOne({ eventName: eventName });
-    if (existingEvent) {
-      return res.status(400).json({ message: "Event already exists" });
-    }
 
     await newEvent.save();
     res.status(201).json({ message: "Event added!", event: newEvent });
@@ -65,7 +69,9 @@ export async function getUserEvents(req, res) {
     const registrations = await Registration.find({ user: userId }).populate(
       "event"
     );
-    const events = registrations.map((reg) => reg.event);
+    const events = registrations
+      .map((reg) => reg.event)
+      .filter((event) => event !== null);
     res.status(200).json(events);
   } catch (error) {
     res
@@ -81,8 +87,10 @@ export async function getRegistrations(req, res) {
       "user"
     );
 
-    const events = registrations.map((reg) => reg.user);
-    res.status(200).json(events);
+    const users = registrations
+      .map((reg) => reg.user)
+      .filter((user) => user !== null);
+    res.status(200).json(users);
   } catch (err) {
     res.status(500).json({ message: "Error loading registrations" });
   }

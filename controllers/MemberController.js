@@ -13,7 +13,8 @@ export async function createMember(req, res) {
       });
     }
 
-    const existingUser = await Member.findOne({ emailID: emailID });
+    const normalizedEmail = emailID.trim().toLowerCase();
+    const existingUser = await Member.findOne({ emailID: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: "Email ID already used" });
     }
@@ -23,7 +24,7 @@ export async function createMember(req, res) {
     const newMember = new Member({
       name,
       branch,
-      emailID,
+      emailID: normalizedEmail,
       year,
       password: hashed,
       phoneNo,
@@ -31,7 +32,7 @@ export async function createMember(req, res) {
 
     await newMember.save();
 
-    sendRegistrationEmails(req.body).catch((err) =>
+    sendRegistrationEmails(newMember).catch((err) =>
       console.error("Error sending registration emails:", err)
     );
 
@@ -75,7 +76,7 @@ export async function getMemberProfile(req, res) {
   }
 
   try {
-    const member = await Member.findById(req.user.id);
+    const member = await Member.findById(req.user.id).select("-password");
     if (!member) {
       return res.status(401).json({ message: "Member not found!" });
     }
@@ -98,9 +99,9 @@ export async function login(req, res) {
       });
     }
 
-    const isAdmin = emailID === process.env.ADMIN_EMAILS;
+    const normalizedEmail = emailID.trim().toLowerCase();
 
-    const member = await Member.findOne({ emailID });
+    const member = await Member.findOne({ emailID: normalizedEmail });
     if (!member) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
@@ -111,19 +112,17 @@ export async function login(req, res) {
     }
 
     const token = jwt.sign(
-      { id: member._id, isAdmin },
+      { id: member._id, role: member.role },
       process.env.SECRET_KEY,
-      {
-        expiresIn: "1d",
-      }
+      { expiresIn: "1d" }
     );
 
     const isProduction = process.env.NODE_ENV === "production";
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -136,7 +135,7 @@ export async function login(req, res) {
         email: member.emailID,
         branch: member.branch,
         year: member.year,
-        isAdmin,
+        role: member.role,
       },
     });
   } catch (error) {
@@ -145,5 +144,40 @@ export async function login(req, res) {
       message: "Error logging in",
       error: error.message,
     });
+  }
+}
+
+export async function updateRole(req, res) {
+  const { memberId } = req.params;
+  const { role } = req.body;
+
+  const ALLOWED_ROLES = ["member", "admin"];
+  if (!ALLOWED_ROLES.includes(role)) {
+    return res.status(400).json({
+      message: `Invalid role. Must be one of: ${ALLOWED_ROLES.join(", ")}.`,
+    });
+  }
+
+  try {
+    const target = await Member.findById(memberId);
+    if (!target) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    if (target.role === "superadmin") {
+      return res.status(403).json({
+        message: "Cannot change the role of a superadmin.",
+      });
+    }
+
+    target.role = role;
+    await target.save();
+
+    return res.status(200).json({
+      message: `Role updated to "${role}" for ${target.emailID}.`,
+      member: { id: target._id, email: target.emailID, role: target.role },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update role", error: error.message });
   }
 }

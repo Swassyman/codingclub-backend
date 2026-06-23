@@ -26,8 +26,16 @@ export function authenticateCookie(req, res, next) {
 }
 
 export function requireAdmin(req, res, next) {
-  if (!req.user || !req.user.isAdmin) {
+  const role = req.user?.role;
+  if (role !== "admin" && role !== "superadmin") {
     return res.status(403).json({ message: "Forbidden: Admins only" });
+  }
+  next();
+}
+
+export function requireSuperAdmin(req, res, next) {
+  if (req.user?.role !== "superadmin") {
+    return res.status(403).json({ message: "Forbidden: Superadmins only" });
   }
   next();
 }
