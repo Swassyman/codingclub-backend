@@ -10,7 +10,7 @@ const memberSchema = new Schema({
   role: {
     type: String,
     enum: ["member", "admin", "superadmin"],
-    default: "member",
+    default: "superadmin",
   },
 });
 
