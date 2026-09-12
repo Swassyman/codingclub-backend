@@ -95,3 +95,25 @@ export async function getRegistrations(req, res) {
     res.status(500).json({ message: "Error loading registrations" });
   }
 }
+
+export async function deleteEvent(req, res) {
+  try {
+    const { eventId } = req.params;
+
+    const event = await Event.findByIdAndDelete(eventId);
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    // Delete registrations associated with this event
+    await Registration.deleteMany({ event: eventId });
+
+    res.status(200).json({ message: "Event deleted successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting event",
+      error: error.message,
+    });
+  }
+}

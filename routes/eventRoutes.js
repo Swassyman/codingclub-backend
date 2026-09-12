@@ -7,6 +7,7 @@ import {
   getRegistrations,
   getUserEvents,
   getUserEventsID,
+  deleteEvent,
 } from "../controllers/EventController.js";
 import { authenticateCookie, requireAdmin } from "../middlewares/jwtauth.js";
 
@@ -32,6 +33,12 @@ router.post(
   requireAdmin,
   upload.single("image"),
   createEvent
+);
+router.delete(
+  "/:eventId",
+  authenticateCookie,
+  requireAdmin,
+  deleteEvent
 );
 
 export default router;
